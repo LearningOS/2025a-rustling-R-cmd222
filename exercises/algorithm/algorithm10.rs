@@ -2,7 +2,6 @@
 	graph
 	This problem requires you to implement a basic graph functio
 */
-// I AM NOT DONE
 
 use std::collections::{HashMap, HashSet};
 use std::fmt;
@@ -30,6 +29,22 @@ impl Graph for UndirectedGraph {
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
         //TODO
+        let (from_node, to_node, weight) = edge;
+
+        // 1. 添加从 from_node 到 to_node 的边
+        self.add_node(from_node); // 确保 from_node 存在
+        self.add_node(to_node);   // 确保 to_node 存在
+        
+        self.adjacency_table_mutable()
+            .get_mut(from_node)
+            .unwrap()
+            .push((to_node.to_string(), weight));
+
+        // 2. 因为是无向图，所以也要添加从 to_node 到 from_node 的边
+        self.adjacency_table_mutable()
+            .get_mut(to_node)
+            .unwrap()
+            .push((from_node.to_string(), weight));
     }
 }
 pub trait Graph {
@@ -37,8 +52,17 @@ pub trait Graph {
     fn adjacency_table_mutable(&mut self) -> &mut HashMap<String, Vec<(String, i32)>>;
     fn adjacency_table(&self) -> &HashMap<String, Vec<(String, i32)>>;
     fn add_node(&mut self, node: &str) -> bool {
-        //TODO
-		true
+       // 使用 HashMap 的 entry API，这是一种高效且符合 Rust 风格的做法
+        // entry() 会返回一个 Entry 枚举
+        match self.adjacency_table_mutable().entry(node.to_string()) {
+            // 如果键已存在 (Occupied)，则什么也不做，返回 false
+            std::collections::hash_map::Entry::Occupied(_) => false,
+            // 如果键不存在 (Vacant)，则插入一个新的空 Vec，并返回 true
+            std::collections::hash_map::Entry::Vacant(entry) => {
+                entry.insert(Vec::new());
+                true
+            }
+        }
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
         //TODO

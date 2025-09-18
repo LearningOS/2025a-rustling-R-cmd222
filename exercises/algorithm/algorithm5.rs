@@ -2,8 +2,6 @@
 	bfs
 	This problem requires you to implement a basic BFS algorithm
 */
-
-//I AM NOT DONE
 use std::collections::VecDeque;
 
 // Define a graph
@@ -29,9 +27,44 @@ impl Graph {
     fn bfs_with_return(&self, start: usize) -> Vec<usize> {
         
 		//TODO
+   let n = self.adj.len();
+    // 处理空图的边界情况
+    if n == 0 {
+        return vec![];
+    }
+    
+    // `queue` 用于存储待访问的节点，这是 BFS 的核心数据结构
+    let mut queue = VecDeque::new();
+    // `visited` 用于标记一个节点是否已经被访问过，防止重复访问和死循环
+    let mut visited = vec![false; n];
+    // `visit_order` 用于存储最终的访问顺序
+    let mut visit_order = vec![];
 
-        let mut visit_order = vec![];
-        visit_order
+    // 1. 从起始节点开始
+    // 将起始节点标记为已访问
+    visited[start] = true;
+    // 将起始节点加入队列
+    queue.push_back(start);
+
+    // 2. 只要队列不为空，就继续循环
+    while let Some(u) = queue.pop_front() {
+        // a. 从队列中取出一个节点 `u`
+        // b. 将该节点加入到我们的结果列表中
+        visit_order.push(u);
+
+        // c. 遍历该节点的所有邻居 `v`
+        for &v in &self.adj[u] {
+            // d. 如果邻居 `v` 还没有被访问过
+            if !visited[v] {
+                // 将其标记为已访问
+                visited[v] = true;
+                // 并将其加入队列，等待后续访问
+                queue.push_back(v);
+            }
+        }
+    }
+
+    visit_order
     }
 }
 

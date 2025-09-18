@@ -2,8 +2,6 @@
 	dfs
 	This problem requires you to implement a basic DFS traversal
 */
-
-// I AM NOT DONE
 use std::collections::HashSet;
 
 struct Graph {
@@ -24,6 +22,18 @@ impl Graph {
 
     fn dfs_util(&self, v: usize, visited: &mut HashSet<usize>, visit_order: &mut Vec<usize>) {
         //TODO
+        if visited.insert(v) {
+        // 2. 如果是首次访问，就将其加入到访问顺序列表中。
+        visit_order.push(v);
+        
+        // 3. 递归地访问该节点的所有邻居。
+        //    这是 DFS 的核心：“一条路走到黑”。
+        for &neighbor in &self.adj[v] {
+            // 4. 在递归调用之前，我们不需要再次检查邻居是否被访问过，
+            //    因为递归调用的第一步就是检查和标记。
+            self.dfs_util(neighbor, visited, visit_order);
+        }
+    }
     }
 
     // Perform a depth-first search on the graph, return the order of visited nodes
